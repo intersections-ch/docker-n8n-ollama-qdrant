@@ -1,0 +1,24 @@
+name: ollama
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - ragnet
+
+volumes:
+  ollama_data:
+
+networks:
+  # Shared by all three compose files. The explicit `name:` keeps it as plain
+  # `ragnet` (not `<project>_ragnet`), so whichever file starts first creates it
+  # and the others attach to the same one. `down` leaves it alone while another
+  # service is still attached.
+  ragnet:
+    name: ragnet

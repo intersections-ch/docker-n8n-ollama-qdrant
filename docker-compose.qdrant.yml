@@ -1,0 +1,25 @@
+name: qdrant
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"   # REST API + web dashboard at http://localhost:6333/dashboard
+      - "6334:6334"   # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - ragnet
+
+volumes:
+  qdrant_data:
+
+networks:
+  # Shared by all three compose files. The explicit `name:` keeps it as plain
+  # `ragnet` (not `<project>_ragnet`), so whichever file starts first creates it
+  # and the others attach to the same one. `down` leaves it alone while another
+  # service is still attached.
+  ragnet:
+    name: ragnet
